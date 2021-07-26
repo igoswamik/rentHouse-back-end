@@ -23,6 +23,7 @@ const HousepostSchema = new Schema({
   price: Number,
   description: String,
   city: String,
+  configuration: String,
   zip: Number,
   facing: String,
   duration: String,
