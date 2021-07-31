@@ -1,28 +1,36 @@
+require("dotenv").config({ path: "./config.env" });
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-// const path = require("path");
 const Housepost = require("./models/housepost");
 const Review = require("./models/review");
-const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/rent-house";
-mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-});
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-  console.log("Database Connected!");
-});
+const connectDB = require("./config/db");
+//connect DB
+connectDB();
+
+// const dbUrl = process.env.MONGO_URI || "mongodb://localhost:27017/rent-house";
+// mongoose.connect(dbUrl, {
+//   useNewUrlParser: true,
+//   useCreateIndex: true,clear
+//   useUnifiedTopology: true,
+//   useFindAndModify: false,
+// });
+
+// const db = mongoose.connection;
+// db.on("error", console.error.bind(console, "connection error:"));
+// db.once("open", () => {
+//   console.log("Database Connected!");
+// });
 
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); //middleware that allows us to get data from body i.e req.body
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/api/auth", require("./routes/auth")); //any api starting with /api/auth will be redirected to auth route
+
 app.get("/", (req, res) => {
   res.send("Server Home");
 });
@@ -77,6 +85,12 @@ app.delete("/post/:id/:reviewId", async (req, res) => {
   res.send("deleted review");
 });
 
-app.listen(8081, () => {
-  console.log("server listning on port 8081");
+const PORT = process.env.PORT || 8081;
+const server = app.listen(PORT, () => {
+  console.log("server listning on port", PORT);
+});
+
+process.on("unhandledRejection", (err, promise) => {
+  console.log(`Logged error: ${err}`);
+  server.close(() => process.exit(1));
 });
