@@ -31,7 +31,7 @@ app.use(express.json()); //middleware that allows us to get data from body i.e r
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", require("./routes/auth")); //any api starting with /api/auth will be redirected to auth route
-
+app.use("/api/private", require("./routes/private"));
 app.get("/", (req, res) => {
   res.send("Server Home");
 });
