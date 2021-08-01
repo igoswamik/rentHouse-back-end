@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const Housepost = require("./models/housepost");
 const Review = require("./models/review");
+const errorHandler = require("./middleware/error");
 
 const connectDB = require("./config/db");
 //connect DB
@@ -84,6 +85,9 @@ app.delete("/post/:id/:reviewId", async (req, res) => {
   await Review.findByIdAndDelete(reviewId);
   res.send("deleted review");
 });
+
+/*************Error Handler (should be last peice of middleware) *****************/
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8081;
 const server = app.listen(PORT, () => {
