@@ -48,6 +48,7 @@ app.get("/allposts", async (req, res) => {
   res.send(posts);
 });
 app.get("/post/:id", async (req, res) => {
+  // console.log("id=", req.params.id);
   const house = await Housepost.findById(req.params.id).populate("reviews"); //populating reviews of this house post;
   res.send(house);
 });
