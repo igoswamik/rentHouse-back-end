@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -51,6 +52,16 @@ UserSchema.methods.getSignedJwtToken = function () {
   });
 };
 
+UserSchema.methods.getResetPasswordToken = function () {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+  this.resetpasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.resetpasswordExpire = Date.now() + 10 * 60 * 1000;
+  return resetToken;
+};
 // UserSchema.plugin(passportLocalMongoose); //its gonna add username and password to our schema and will automatically check for username to be unique and will give us some additional methods to useetc.
 
 module.exports = mongoose.model("User", UserSchema);

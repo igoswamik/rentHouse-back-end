@@ -7,6 +7,7 @@ const Review = require("./models/review");
 const errorHandler = require("./middleware/error");
 
 const connectDB = require("./config/db");
+const User = require("./models/user");
 //connect DB
 connectDB();
 
@@ -62,9 +63,10 @@ app.delete("/post/:id", async (req, res) => {
   await Housepost.findByIdAndDelete(req.params.id);
   res.status(200).send("Deleted!!!!");
 });
-app.post("/user/new", async (req, res) => {
-  const userData = req.body;
-  res.send("got");
+app.get("/user/:id", async (req, res) => {
+  const id = req.params.id;
+  const user = await User.findById(id);
+  res.status(200).send(user);
 });
 app.post("/post/:id/createreview", async (req, res) => {
   console.log(req.params.id);
